@@ -1,13 +1,24 @@
 package main
 
-import(
+import (
 	"bufio"
 	"fmt"
 	"os"
 )
 
+type config struct {
+	Next string
+	Prev string
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
+	reg := getCommandsRegistry()
+	conf := config{
+		locationURL,
+		"",
+	}
+
 	for {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
@@ -15,9 +26,14 @@ func main() {
 		if len(words) == 0 {
 			continue
 		}
-		fmt.Printf("Your command was: %v\n", words[0])
-		if words[0] == "exit" {
-			break
+		command, exists := reg[words[0]]
+		if exists {
+			err := command.callback(&conf)
+			if err != nil {
+				fmt.Printf("error: %v\n", err)
+			}
+		} else {
+			fmt.Println("Unknown command")
 		}
 	}
 }
