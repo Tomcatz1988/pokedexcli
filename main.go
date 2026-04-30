@@ -8,7 +8,7 @@ import (
 
 type config struct {
 	Next string
-	Prev string
+	Previous string
 }
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	reg := getCommandsRegistry()
 	conf := config{
 		locationURL,
-		"",
+		locationURL,
 	}
 
 	for {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	pokeapi "github.com/Tomcatz1988/pokeapi"
@@ -30,6 +29,11 @@ func getCommandsRegistry() (reg map[string]cliCommand) {
 			description: "Displays next 20 locations in the Pokemon world",
 			callback:    commandMap,
 		},
+		"mapb": {
+			name:        "mapb",
+			description: "Displays previous 20 locations in the Pokemon world",
+			callback:    commandMapBack,
+		},
 	}
 	return reg
 }
@@ -53,6 +57,38 @@ func commandHelp(conf *config) error {
 
 func commandMap(conf *config) error {
 	_ = conf
-	_, _ = pokeapi.GetLocationBatch(conf.Next)
-	return errors.New("command not implemented yet")
+	batch, err := pokeapi.GetLocationBatch(conf.Next)
+	if err != nil {
+		return fmt.Errorf("commandMap(): %w", err)
+	}
+
+	for _, location := range(batch.Results) {
+		fmt.Println(location.Name)
+	}
+	if batch.Next != nil {
+		conf.Next = *batch.Next
+	}
+	if batch.Previous != nil {
+		conf.Previous = *batch.Previous
+	}
+	return nil
+}
+
+func commandMapBack(conf *config) error {
+	_ = conf
+	batch, err := pokeapi.GetLocationBatch(conf.Previous)
+	if err != nil {
+		return fmt.Errorf("commandMapBack(): %w: ",err)
+	}
+
+	for _, location := range(batch.Results) {
+		fmt.Println(location.Name)
+	}
+	if batch.Next != nil {
+		conf.Next = *batch.Next
+	}
+	if batch.Previous != nil {
+		conf.Previous = *batch.Previous
+	}
+	return nil
 }
