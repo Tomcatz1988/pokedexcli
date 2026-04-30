@@ -56,7 +56,6 @@ func commandHelp(conf *config) error {
 }
 
 func commandMap(conf *config) error {
-	_ = conf
 	batch, err := pokeapi.GetLocationBatch(conf.Next)
 	if err != nil {
 		return fmt.Errorf("commandMap(): %w", err)
@@ -75,7 +74,6 @@ func commandMap(conf *config) error {
 }
 
 func commandMapBack(conf *config) error {
-	_ = conf
 	batch, err := pokeapi.GetLocationBatch(conf.Previous)
 	if err != nil {
 		return fmt.Errorf("commandMapBack(): %w: ",err)
