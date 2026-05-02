@@ -1,6 +1,7 @@
 package pokecache
 
 import (
+	"fmt"
 	"sync"
 	"time"
 )
@@ -59,6 +60,7 @@ func (cache *Cache) Add(key string, val []byte) {
 		val,
 	}
 	cache.mux.Unlock()
+	fmt.Println("result cached")
 }
 
 func (cache *Cache) Get(key string) (val []byte, exists bool) {

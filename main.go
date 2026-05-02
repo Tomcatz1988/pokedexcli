@@ -4,6 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"time"
+
+	pokecache "https://github.com/Tomcatz1988/pokedexcli/tree/main/internal/pokecache"
 )
 
 type config struct {
@@ -18,6 +21,7 @@ func main() {
 		locationURL,
 		locationURL,
 	}
+	cache := pokecache.NewCache(cacheDuration)
 
 	for {
 		fmt.Print("Pokedex > ")

@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"os"
-	pokeapi "github.com/Tomcatz1988/pokedexcli/internal/pokeapi"
+
+	pokeapi "github.com/Tomcatz1988/pokedexcli/tree/main/internal/pokeapi"
+	pokecache "https://github.com/Tomcatz1988/pokedexcli/tree/main/internal/pokecache"
 )
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(conf *config) error
+	callback    func(conf *config, cache *pokecache.Cache) error
 }
 
 func getCommandsRegistry() (reg map[string]cliCommand) {
@@ -38,14 +40,14 @@ func getCommandsRegistry() (reg map[string]cliCommand) {
 	return reg
 }
 
-func commandExit(conf *config) error {
+func commandExit(conf *config, cache *pokecache.Cache) error {
 	_ = conf
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(conf *config) error {
+func commandHelp(conf *config, cache *pokecache.Cache) error {
 	_ = conf
 	fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 	reg := getCommandsRegistry()
@@ -55,11 +57,11 @@ func commandHelp(conf *config) error {
 	return nil
 }
 
-func commandMap(conf *config) error {
+func commandMap(conf *config, cache *pokecache.Cache) error {
 	batch, err := pokeapi.GetLocationBatch(conf.Next)
 	if err != nil {
 		return fmt.Errorf("commandMap(): %w", err)
-	}
+	}``
 
 	for _, location := range(batch.Results) {
 		fmt.Println(location.Name)
@@ -73,7 +75,7 @@ func commandMap(conf *config) error {
 	return nil
 }
 
-func commandMapBack(conf *config) error {
+func commandMapBack(conf *config, cache *pokecache.Cache) error {
 	batch, err := pokeapi.GetLocationBatch(conf.Previous)
 	if err != nil {
 		return fmt.Errorf("commandMapBack(): %w: ",err)
