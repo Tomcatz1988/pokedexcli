@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	pokeapi "github.com/Tomcatz1988/pokedexcli/tree/main/internal/pokeapi"
-	pokecache "https://github.com/Tomcatz1988/pokedexcli/tree/main/internal/pokecache"
+	pokeapi "internal/pokeapi"
+	pokecache "internal/pokecache"
 )
 
 type cliCommand struct {
@@ -58,10 +58,10 @@ func commandHelp(conf *config, cache *pokecache.Cache) error {
 }
 
 func commandMap(conf *config, cache *pokecache.Cache) error {
-	batch, err := pokeapi.GetLocationBatch(conf.Next)
+	batch, err := pokeapi.GetLocationBatch(conf.Next, cache)
 	if err != nil {
 		return fmt.Errorf("commandMap(): %w", err)
-	}``
+	}
 
 	for _, location := range(batch.Results) {
 		fmt.Println(location.Name)
@@ -76,7 +76,7 @@ func commandMap(conf *config, cache *pokecache.Cache) error {
 }
 
 func commandMapBack(conf *config, cache *pokecache.Cache) error {
-	batch, err := pokeapi.GetLocationBatch(conf.Previous)
+	batch, err := pokeapi.GetLocationBatch(conf.Previous, cache)
 	if err != nil {
 		return fmt.Errorf("commandMapBack(): %w: ",err)
 	}

@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	pokecache "github.com/Tomcatz1988/pokedexcli/internal/pokecache"
+	pokecache "internal/pokecache"
 )
 
 
@@ -21,7 +21,7 @@ type LocationBatch struct {
 }
 
 
-func GetLocationBatch(url string, cache pokecache.Cache) (batch LocationBatch, err error) {
+func GetLocationBatch(url string, cache *pokecache.Cache) (batch LocationBatch, err error) {
 	data, exists := cache.Get(url)
 	if !exists {
 		data, err = getBatchFromWeb(url)
@@ -29,8 +29,6 @@ func GetLocationBatch(url string, cache pokecache.Cache) (batch LocationBatch, e
 			return LocationBatch{}, err
 		}
 		cache.Add(url, data)
-	} else {
-		fmt.Println("result from cache")
 	}
 	if err = json.Unmarshal(data, &batch); err != nil {
 		return LocationBatch{}, fmt.Errorf("pokeapi.GetLocationBatch() - unmarshal error: %w", err)

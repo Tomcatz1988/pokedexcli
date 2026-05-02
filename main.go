@@ -4,9 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"time"
 
-	pokecache "https://github.com/Tomcatz1988/pokedexcli/tree/main/internal/pokecache"
+	pokecache "internal/pokecache"
 )
 
 type config struct {
@@ -32,7 +31,7 @@ func main() {
 		}
 		command, exists := reg[words[0]]
 		if exists {
-			err := command.callback(&conf)
+			err := command.callback(&conf, &cache)
 			if err != nil {
 				fmt.Printf("error: %v\n", err)
 			}
