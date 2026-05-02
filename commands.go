@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	pokeapi "github.com/Tomcatz1988/pokeapi"
+	pokeapi "github.com/Tomcatz1988/pokedexcli/internal/pokeapi"
 )
 
 type cliCommand struct {
@@ -47,7 +47,7 @@ func commandExit(conf *config) error {
 
 func commandHelp(conf *config) error {
 	_ = conf
-	fmt.Println("Welcome to the Pokedex!\nUsage:\n")
+	fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 	reg := getCommandsRegistry()
 	for _, command := range reg {
 		fmt.Printf("%s: %s\n", command.name, command.description)
