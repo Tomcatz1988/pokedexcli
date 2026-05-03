@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"sort"
 
 	pokeapi "internal/pokeapi"
 )
@@ -51,8 +50,13 @@ func getCommandsRegistry() (reg map[string]cliCommand) {
 		},
 		"inspect": {
 			name:        "inspect",
-			description: "View information about the specified pokemon if it exists in the pokedex",
+			description: "Displays information about the specified pokemon if it exists in the pokedex",
 			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Displays a list of all pokemon in the pokedex",
+			callback:    commandPokedex,
 		},
 	}
 	return reg
@@ -68,23 +72,13 @@ func commandExit(conf *config) error {
 
 func commandHelp(conf *config) error {
 	fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
-	reg := getCommandsRegistry()
+	reg := conf.reg
 	keys := sortMapKeys(reg)
 	for _, key := range(keys) {
 		command := reg[key]
 		fmt.Printf("%s: %s\n", command.name, command.description)
 	}
 	return nil
-}
-
-
-func sortMapKeys[T any] (m map[string]T) []string {
-	keys := make([]string, 0, len(m))
-	for k, _ := range(m) {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
 }
 
 
@@ -135,17 +129,19 @@ func commandExplore(conf *config) error {
 		return errors.New("'explore' requires a [location] as an argument - explore [location]")
 	}
 
-	fmt.Printf("Exploring %v...\n", args[0])
-	targetURL := baseURL + locationURL + args[0] + "/"
-	info, err := pokeapi.GetAreaInfo(targetURL, cache)
-	if err != nil {
-		return fmt.Errorf("error: commandExplore: %w", err)
-	}
+	for _, arg := range(args) {
+		fmt.Printf("Exploring %v...\n", arg)
+		targetURL := baseURL + locationURL + arg + "/"
+		info, err := pokeapi.GetAreaInfo(targetURL, cache)
+		if err != nil {
+			return fmt.Errorf("error: commandExplore: %w", err)
+		}
 
-	encounters := info.PokemonEncounters
-	for _, encounter := range(encounters) {
-		pokemon := encounter.Pokemon.Name
-		fmt.Printf("- %v\n", pokemon)
+		encounters := info.PokemonEncounters
+		for _, encounter := range(encounters) {
+			pokemon := encounter.Pokemon.Name
+			fmt.Printf("- %v\n", pokemon)
+		}
 	}
 	return nil
 }
@@ -183,20 +179,37 @@ func commandInspect(conf *config) error {
 		return errors.New("'inspect' requires a [pokemon] as an argument - explore [pokemon]")
 	}
 
-	name := conf.args[0]
-	pokemon, exists := pokedex[name]
-	if !exists {
-		return fmt.Errorf("%s has not been caught yet", name)
-	}
+	for _, arg := range(args) {
+		name := arg
+		pokemon, exists := pokedex[name]
+		if !exists {
+			return fmt.Errorf("%s has not been caught yet", name)
+		}
 
-	fmt.Printf("Name: %s\nHeight: %v\nWeight: %v\n", pokemon.Name, pokemon.Height, pokemon.Weight)
-	fmt.Println("Stats:")
-	for _, s := range(pokemon.Stats) {
-		fmt.Printf("  -%s: %v\n", s.Stat.Name, s.BaseStat)
+		fmt.Printf("Name: %s\nHeight: %v\nWeight: %v\n", pokemon.Name, pokemon.Height, pokemon.Weight)
+		fmt.Println("Stats:")
+		for _, s := range(pokemon.Stats) {
+			fmt.Printf("  -%s: %v\n", s.Stat.Name, s.BaseStat)
+		}
+		fmt.Println("Types:")
+		for _, t := range(pokemon.Types) {
+			fmt.Printf("  - %s\n", t.Type.Name)
+		}
 	}
-	fmt.Println("Types:")
-	for _, t := range(pokemon.Types) {
-		fmt.Printf("  - %s\n", t.Type.Name)
+	return nil
+}
+
+
+func commandPokedex(conf *config) error {
+	pokedex := conf.pokedex
+	fmt.Println("Your Pokedex:")
+	if len(pokedex) == 0 {
+		fmt.Println(" - empty -")
+	}
+	keys := sortMapKeys(pokedex)
+	for _, key := range(keys) {
+		name := pokedex[key].Name
+		fmt.Printf(" - %s\n", name)
 	}
 	return nil
 }
