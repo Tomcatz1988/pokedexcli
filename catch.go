@@ -7,7 +7,6 @@ import (
 	pokeapi "internal/pokeapi"
 )
 
-
 func catch(pokemon pokeapi.Pokemon, pokedex map[string]pokeapi.Pokemon) bool {
 	clock := time.Now()
 	h, m, s := clock.Clock()

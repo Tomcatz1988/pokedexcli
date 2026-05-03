@@ -33,6 +33,7 @@ func getFromAPI(url string) (data []byte, err error) {
 	if res.StatusCode < 200 || res.StatusCode > 299 {
 		return data, fmt.Errorf("returned http code: %s", res.Status)
 	}
+
 	data, err = io.ReadAll(res.Body)
 	if err != nil {
 		return data, fmt.Errorf("getFromAPI: %w", err)

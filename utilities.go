@@ -15,10 +15,9 @@ func cleanInput(text string) (cleanText []string) {
 	return cleanText
 }
 
-
-func sortMapKeys[T any] (m map[string]T) []string {
+func sortMapKeys[T any](m map[string]T) []string {
 	keys := make([]string, 0, len(m))
-	for k, _ := range(m) {
+	for k, _ := range m {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

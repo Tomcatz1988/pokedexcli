@@ -44,40 +44,32 @@ func TestCleanInput(t *testing.T) {
 	}
 }
 
-
-
 func TestSortMapKeys(t *testing.T) {
 	cases := []struct {
-		input    map[string]struct{}
+		input    map[string]any
 		expected []string
 	}{
 		{
-			input: map[string]struct{} {
+			input: map[string]struct{}{
 				"a": {},
 				"b": {},
 			},
 			expected: []string{"a", "b"},
 		},
 		{
-			input: map[string]struct{}{},
+			input:    map[string]struct{}{},
 			expected: []string{},
 		},
 	}
 
 	for _, tc := range cases {
 		actual := sortMapKeys(tc.input)
-		// Check the length of the actual slice against the expected slice
-		// if they don't match, use t.Errorf to print an error message
-		// and fail the test
 		if len(actual) != len(tc.expected) {
 			t.Errorf("expected length: %v, actual length: %v", len(tc.expected), len(actual))
 		}
 		for i, _ := range actual {
 			word := actual[i]
 			expectedWord := tc.expected[i]
-			// Check each word in the slice
-			// if they don't match, use t.Errorf to print an error message
-			// and fail the test
 			if word != expectedWord {
 				t.Errorf("expected: %v, actual: %v", expectedWord, word)
 			}

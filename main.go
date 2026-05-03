@@ -10,12 +10,12 @@ import (
 )
 
 type config struct {
-	Next string
+	Next     string
 	Previous string
-	reg map[string]cliCommand
-	cache *pokecache.Cache
-	args []string
-	pokedex map[string]pokeapi.Pokemon
+	reg      map[string]cliCommand
+	cache    *pokecache.Cache
+	args     []string
+	pokedex  map[string]pokeapi.Pokemon
 }
 
 func main() {
@@ -24,11 +24,11 @@ func main() {
 	cache := pokecache.NewCache(cacheDuration)
 	pokedex := make(map[string]pokeapi.Pokemon)
 	conf := config{
-		Next: baseURL + locationURL,
+		Next:     baseURL + locationURL,
 		Previous: baseURL + locationURL,
-		reg: reg,
-		cache: &cache,
-		pokedex: pokedex,
+		reg:      reg,
+		cache:    &cache,
+		pokedex:  pokedex,
 	}
 
 	for {
