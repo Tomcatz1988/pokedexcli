@@ -4,5 +4,7 @@ import(
 	"time"
 )
 
-const locationURL = "https://pokeapi.co/api/v2/location-area/"
+const baseURL = "https://pokeapi.co/api/v2/"
+const locationURL = "location-area/"
+const pokemonURL = "pokemon/"
 const cacheDuration = 5 * time.Second

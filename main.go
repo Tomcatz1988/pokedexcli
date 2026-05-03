@@ -5,25 +5,32 @@ import (
 	"fmt"
 	"os"
 
+	pokeapi "internal/pokeapi"
 	pokecache "internal/pokecache"
 )
 
 type config struct {
 	Next string
 	Previous string
+	cache *pokecache.Cache
+	args []string
+	pokedex map[string]pokeapi.Pokemon
 }
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	reg := getCommandsRegistry()
-	conf := config{
-		locationURL,
-		locationURL,
-	}
 	cache := pokecache.NewCache(cacheDuration)
+	pokedex := make(map[string]pokeapi.Pokemon)
+	conf := config{
+		Next: baseURL + locationURL,
+		Previous: baseURL + locationURL,
+		cache: &cache,
+		pokedex: pokedex,
+	}
 
 	for {
-		fmt.Print("Pokedex > ")
+		fmt.Print("\nPokedex > ")
 		scanner.Scan()
 		words := cleanInput(scanner.Text())
 		fmt.Println("")
@@ -36,13 +43,13 @@ func main() {
 			if len(words) > 1 {
 				args = words[1:]
 			}
-			err := command.callback(&conf, &cache, args)
+			conf.args = args
+			err := command.callback(&conf)
 			if err != nil {
-				fmt.Printf("error: %v\n", err)
+				fmt.Printf("%v\n", err)
 			}
 		} else {
-			fmt.Printf("Unknown command")
+			fmt.Printf("Unknown command\n")
 		}
-		fmt.Println("")
 	}
 }
