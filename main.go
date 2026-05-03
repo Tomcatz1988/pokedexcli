@@ -31,7 +31,11 @@ func main() {
 		}
 		command, exists := reg[words[0]]
 		if exists {
-			err := command.callback(&conf, &cache)
+			var args []string
+			if len(words) > 1 {
+				args = words[1:]
+			}
+			err := command.callback(&conf, &cache, args)
 			if err != nil {
 				fmt.Printf("error: %v\n", err)
 			}

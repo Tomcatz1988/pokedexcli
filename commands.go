@@ -11,7 +11,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(conf *config, cache *pokecache.Cache) error
+	callback    func(conf *config, cache *pokecache.Cache, args []string) error
 }
 
 func getCommandsRegistry() (reg map[string]cliCommand) {
@@ -36,18 +36,23 @@ func getCommandsRegistry() (reg map[string]cliCommand) {
 			description: "Displays previous 20 locations in the Pokemon world",
 			callback:    commandMapBack,
 		},
+		"explore": {
+			name:        "explore",
+			description: "Displays all species of pokemone in the specified area",
+			callback:    commandExplore,
+		},
 	}
 	return reg
 }
 
-func commandExit(conf *config, cache *pokecache.Cache) error {
+func commandExit(conf *config, cache *pokecache.Cache, args []string) error {
 	_ = conf
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(conf *config, cache *pokecache.Cache) error {
+func commandHelp(conf *config, cache *pokecache.Cache, args []string) error {
 	_ = conf
 	fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 	reg := getCommandsRegistry()
@@ -57,8 +62,8 @@ func commandHelp(conf *config, cache *pokecache.Cache) error {
 	return nil
 }
 
-func commandMap(conf *config, cache *pokecache.Cache) error {
-	batch, err := pokeapi.GetLocationBatch(conf.Next, cache)
+func commandMap(conf *config, cache *pokecache.Cache, args []string) error {
+	batch, err := pokeapi.GetAreaBatch(conf.Next, cache)
 	if err != nil {
 		return fmt.Errorf("commandMap(): %w", err)
 	}
@@ -75,8 +80,8 @@ func commandMap(conf *config, cache *pokecache.Cache) error {
 	return nil
 }
 
-func commandMapBack(conf *config, cache *pokecache.Cache) error {
-	batch, err := pokeapi.GetLocationBatch(conf.Previous, cache)
+func commandMapBack(conf *config, cache *pokecache.Cache, args []string) error {
+	batch, err := pokeapi.GetAreaBatch(conf.Previous, cache)
 	if err != nil {
 		return fmt.Errorf("commandMapBack(): %w: ",err)
 	}
@@ -90,5 +95,10 @@ func commandMapBack(conf *config, cache *pokecache.Cache) error {
 	if batch.Previous != nil {
 		conf.Previous = *batch.Previous
 	}
+	return nil
+}
+
+
+func commandExplore(conf *config, cache *pokecache.Cache, args []string) error {
 	return nil
 }
