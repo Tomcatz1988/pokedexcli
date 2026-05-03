@@ -48,6 +48,11 @@ func getCommandsRegistry() (reg map[string]cliCommand) {
 			description: "Attempts to add the specified pokemon to the users collection",
 			callback:    commandCatch,
 		},
+		"inspect": {
+			name:        "inspect",
+			description: "View information about the specified pokemon if it exists in the pokedex",
+			callback:    commandInspect,
+		},
 	}
 	return reg
 }
@@ -153,6 +158,32 @@ func commandCatch(conf *config) error {
 		fmt.Printf("%v was caught!\n", name)
 	} else {
 		fmt.Printf("%v escaped!\n", name)
+	}
+	return nil
+}
+
+
+func commandInspect(conf *config) error {
+	args := conf.args
+	pokedex := conf.pokedex
+	if len(args) == 0 {
+		return errors.New("'inspect' requires a [pokemon] as an argument - explore [pokemon]")
+	}
+
+	name := conf.args[0]
+	pokemon, exists := pokedex[name]
+	if !exists {
+		return fmt.Errorf("%s has not been caught yet", name)
+	}
+
+	fmt.Printf("Name: %s\nHeight: %v\nWeight: %v\n", pokemon.Name, pokemon.Height, pokemon.Weight)
+	fmt.Println("Stats:")
+	for _, s := range(pokemon.Stats) {
+		fmt.Printf("  -%s: %v\n", s.Stat.Name, s.BaseStat)
+	}
+	fmt.Println("Types:")
+	for _, t := range(pokemon.Types) {
+		fmt.Printf("  - %s\n", t.Type.Name)
 	}
 	return nil
 }
