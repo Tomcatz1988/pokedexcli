@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 
 	pokeapi "internal/pokeapi"
 )
@@ -68,10 +69,22 @@ func commandExit(conf *config) error {
 func commandHelp(conf *config) error {
 	fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 	reg := getCommandsRegistry()
-	for _, command := range reg {
+	keys := sortMapKeys(reg)
+	for _, key := range(keys) {
+		command := reg[key]
 		fmt.Printf("%s: %s\n", command.name, command.description)
 	}
 	return nil
+}
+
+
+func sortMapKeys[T any] (m map[string]T) []string {
+	keys := make([]string, 0, len(m))
+	for k, _ := range(m) {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
 }
 
 
