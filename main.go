@@ -26,6 +26,7 @@ func main() {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
 		words := cleanInput(scanner.Text())
+		fmt.Println("")
 		if len(words) == 0 {
 			continue
 		}
@@ -40,7 +41,8 @@ func main() {
 				fmt.Printf("error: %v\n", err)
 			}
 		} else {
-			fmt.Println("Unknown command")
+			fmt.Printf("Unknown command")
 		}
+		fmt.Println("")
 	}
 }

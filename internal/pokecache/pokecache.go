@@ -66,6 +66,7 @@ func (cache *Cache) Get(key string) (val []byte, exists bool) {
 	entry, exists := cache.entries[key]
 	if exists {
 		val = entry.val
+		entry.createdAt = time.Now()
 	} 
 	cache.mux.RUnlock()
 	return val, exists

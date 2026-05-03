@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -46,14 +47,12 @@ func getCommandsRegistry() (reg map[string]cliCommand) {
 }
 
 func commandExit(conf *config, cache *pokecache.Cache, args []string) error {
-	_ = conf
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
 func commandHelp(conf *config, cache *pokecache.Cache, args []string) error {
-	_ = conf
 	fmt.Print("Welcome to the Pokedex!\nUsage:\n\n")
 	reg := getCommandsRegistry()
 	for _, command := range reg {
@@ -65,7 +64,7 @@ func commandHelp(conf *config, cache *pokecache.Cache, args []string) error {
 func commandMap(conf *config, cache *pokecache.Cache, args []string) error {
 	batch, err := pokeapi.GetAreaBatch(conf.Next, cache)
 	if err != nil {
-		return fmt.Errorf("commandMap(): %w", err)
+		return fmt.Errorf("commandMap: %w", err)
 	}
 
 	for _, location := range(batch.Results) {
@@ -83,7 +82,7 @@ func commandMap(conf *config, cache *pokecache.Cache, args []string) error {
 func commandMapBack(conf *config, cache *pokecache.Cache, args []string) error {
 	batch, err := pokeapi.GetAreaBatch(conf.Previous, cache)
 	if err != nil {
-		return fmt.Errorf("commandMapBack(): %w: ",err)
+		return fmt.Errorf("commandMapBack: %w: ",err)
 	}
 
 	for _, location := range(batch.Results) {
@@ -100,5 +99,21 @@ func commandMapBack(conf *config, cache *pokecache.Cache, args []string) error {
 
 
 func commandExplore(conf *config, cache *pokecache.Cache, args []string) error {
+	if len(args) == 0 {
+		return errors.New("'explore' requires a [location] as an argument - explore [location]")
+	}
+
+	fmt.Printf("Exploring %v...\n", args[0])
+	targetURL := locationURL + args[0] + "/"
+	info, err := pokeapi.GetAreaInfo(targetURL, cache)
+	if err != nil {
+		return fmt.Errorf("commandExplore: %w", err)
+	}
+
+	encounters := info.PokemonEncounters
+	for _, encounter := range(encounters) {
+		pokemon := encounter.Pokemon.Name
+		fmt.Printf("- %v\n", pokemon)
+	}
 	return nil
 }
